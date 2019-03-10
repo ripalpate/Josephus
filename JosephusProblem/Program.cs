@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace JosephusProblem
 {
@@ -10,21 +11,41 @@ namespace JosephusProblem
             var numberOfPeople = Convert.ToInt16(Console.ReadLine());
             Console.WriteLine("Please enter killing interval number. It must be greater than 0.");
             var killingInterval = Convert.ToInt32(Console.ReadLine());
-            var position = LastPersonStanding(numberOfPeople, killingInterval);
-            Console.WriteLine($"The last person standing in ({numberOfPeople}, {killingInterval}) is at {position} position");
+            LastPersonStanding(numberOfPeople, killingInterval);
             Console.ReadLine();
         }
-        public static int LastPersonStanding(int numberOfPeople, int killingInterval)
+
+        public static void LastPersonStanding(int numberOfPeople, int killingInterval)
         {
-            if (numberOfPeople == 1)
+            var circleOfPeople = new List<int>();
+
+            for (var i = 1; i <= numberOfPeople; i++)
             {
-                return 1;
+                circleOfPeople.Add(i);
             }
-            else {
-                // The position of LastPersonStanding is adjusted due to recursive call to (numberOfPeople - 1, killingInterval) 
-                // and it considers the original position killingInterval%numberOfpeople +1 as 1
-                return (LastPersonStanding(numberOfPeople - 1, killingInterval) + killingInterval - 1) % numberOfPeople + 1;
+ 
+            do
+            {
+                int Counter = 1;
+                for (var i = 0; i < circleOfPeople.Count; i++)
+                {
+                    if (Counter == killingInterval)
+                    {
+                        circleOfPeople.RemoveAt(0);
+                        Counter = 1;
+                    }
+                    else
+                    {
+                        circleOfPeople.Add(circleOfPeople[0]);
+                        circleOfPeople.RemoveAt(0);
+                        Counter++;
+                        i--;
+                    }
+                }
             }
+            while (circleOfPeople.Count > 1);
+            Console.WriteLine($"The last person standing in ({numberOfPeople}, {killingInterval}) is at {circleOfPeople[0]} position");
+        }
         }
     }
-}
+
